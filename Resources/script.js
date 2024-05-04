@@ -8,15 +8,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const helpButton = createHelpButton();
   root.appendChild(helpButton);
+
+  // Add event listener to update word count when text input changes
+  textInput.addEventListener('input', updateWordCount);
 });
 
 function showExplanation() {
   alert("This program analyzes the word frequency in the text you input. Enter your text in the provided box, and click 'Submit' to see the frequency of each word.");
 }
 
-function hideExplanation() {
-  // Empty function for now, as we don't need to do anything when hiding explanation
-}
 
 function createTextInput() {
   const textarea = createEl('textarea', { placeholder: 'Enter your text here...', id: 'textInput' }, 'input-box');
@@ -27,10 +27,10 @@ function createTextInput() {
 
 function createHelpButton() {
   const helpButton = createEl('button', { textContent: 'Help', id: 'helpBtn' }, 'help-button');
-  helpButton.addEventListener('mouseover', showExplanation);
-  helpButton.addEventListener('mouseout', hideExplanation);
+  helpButton.addEventListener('click', showExplanation); // Change event listener to 'click'
   return helpButton;
 }
+
 
 function createSubmitButton(textInput) {
   const submitButton = createEl('button', { textContent: 'Submit', id: 'submitBtn' }, 'submit-button');
@@ -43,15 +43,17 @@ function createSubmitButton(textInput) {
 }
 
 function calculateFrequency(text) {
-  return text.split(/\s+/).reduce((table, word) => {
-      table[word] = (table[word] || 0) + 1;
-      return table;
+  // Split text into words using a regular expression
+  const words = text.toLowerCase().match(/\b\w+(?:'\w+)?\b/g);
+  return words.reduce((table, word) => {
+    table[word] = (table[word] || 0) + 1;
+    return table;
   }, {});
 }
 
 function renderTopWords(freqTable) {
   const root = document.getElementById('root');
-  const topWords = Object.entries(freqTable).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const topWords = Object.entries(freqTable).sort((a, b) => b[1] - a[1]).slice(0, 5); // Display top 5 words
   const resultDiv = createEl('div', { id: 'result' });
   const table = createEl('table');
   table.innerHTML = `<tr><th>Word</th><th>Frequency</th></tr>`;
@@ -60,6 +62,16 @@ function renderTopWords(freqTable) {
   });
   resultDiv.appendChild(table);
   root.appendChild(resultDiv);
+}
+
+
+
+function updateWordCount() {
+  const textInput = document.getElementById('textInput');
+  const wordCount = document.getElementById('wordCount');
+  const text = textInput.value.trim();
+  const words = text.match(/\b\w+(?:'\w+)?\b/g) || [];
+  wordCount.textContent = words.length;
 }
 
 function createEl(tag, props, className) {
