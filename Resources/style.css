@@ -24,7 +24,6 @@ body{
 
 .input-box {
   margin-bottom: 20px; /* Add space between input box and button */
-  z-index: 1;
 }
 
 /* Submit Button */
